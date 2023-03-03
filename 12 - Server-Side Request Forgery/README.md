@@ -75,6 +75,8 @@ Look through all the results. There is an X-Powered-By header that indicates it 
 
 There seems to be three disctinct endpoints: files, users, and render.
 
+### Advanced Enumeration with Verb Tampering
+
 ### References:
 https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods  
 https://konghq.com/kong/  
