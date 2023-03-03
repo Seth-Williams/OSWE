@@ -69,7 +69,14 @@ I copy and pasted the results into a text file and used the command below to cle
 sort endpoints.txt | cut -d" " -f1 | cut -d "/" -f2 > endpoints_sorted.txt
 ```
 
+I get these results in Burp Suite intruder. Sort by status code. There are four 401 forbidden results. 
+
+Look through all the results. There is an X-Powered-By header that indicates it is a Directus application. 
+
+There seems to be three disctinct endpoints: files, users, and render.
 
 ### References:
-https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
-
+https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods  
+https://konghq.com/kong/  
+https://docs.konghq.com/gateway-oss/2.3.x/admin-api/  
+https://directus.io/
