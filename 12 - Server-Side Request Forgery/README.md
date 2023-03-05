@@ -76,9 +76,21 @@ Look through all the results. There is an X-Powered-By header that indicates it 
 There seems to be three disctinct endpoints: files, users, and render.
 
 ### Advanced Enumeration with Verb Tampering
+See `route_buster.py`
 
+We get a different result by fuzzing both get and post requests.
+
+Extra mile: put and patch methods are added to the script, the /users/invite endpoint needs an email to make a valid request.
 ### References:
 https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods  
 https://konghq.com/kong/  
 https://docs.konghq.com/gateway-oss/2.3.x/admin-api/  
 https://directus.io/
+
+## Intro to SSRF
+SSRF occurs when an attacker can force an application or server to request data or a resource. 
+SSRF can be especially effective against microservices, due to bypassing the security controls of a reverse proxy or an API gateway. 
+
+### SSRF Discovery
+
+Always check *url* parameters in an API or web form for an SSRF vulnerability. 
