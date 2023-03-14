@@ -157,3 +157,6 @@ Check ssrf_gaway_scanner.py to see the finished script.
 ### References
 
 https://nmap.org/book/man-host-discovery.html
+
+## Render API Auth Bypass
+
