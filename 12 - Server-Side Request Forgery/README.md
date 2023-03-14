@@ -153,3 +153,7 @@ The request to a closed port is taking me about .25 - .31 seconds.
 When changing the host to a non reachable one, it takes much longer. 
 
 Check ssrf_gaway_scanner.py to see the finished script. 
+
+### References
+
+https://nmap.org/book/man-host-discovery.html
